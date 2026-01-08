@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DualPay Calculator</title>
     
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23b45309%22/><text x=%2250%%22 y=%2255%%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22sans-serif%22 font-weight=%22bold%22 font-size=%2240%22>DP</text></svg>">
+    
+    <link rel="manifest" href="data:application/json;base64,ewogICJpZCI6ICJkdWFscGF5LWNhbGMiLAogICJuYW1lIjogIkR1YWxQYXkgQ2FsY3VsYXRvciIsCiAgInNob3J0X25hbWUiIjogIkR1YWxQYXkiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBmMTreeGEiLAogICJ0aGVtZV9jb2xvciI6ICIjMGYxNzJhIgp9">
 
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkR1YWxQYXkgQ2FsY3VsYXRvciIsCiAgInNob3J0X25hbWUiIjogIkR1YWxQYXkiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBmMTreeGEiLAogICJ0aGVtZV9jb2xvciI6ICIjMGYxNzJhIgp9">
-
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         :root {
@@ -24,22 +24,23 @@
             font-family: 'Inter', sans-serif;
             background: radial-gradient(circle at top, #0f172a, #020617);
             min-height: 100vh;
-            overflow-x: hidden;
-            color: #f8fafc;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
 
-        h1, .font-artistic {
-            font-family: 'Comfortaa', cursive;
-        }
+        .font-artistic { font-family: 'Comfortaa', cursive; }
 
-        /* Динамичен фон */
+        /* Динамичен фон с анимация */
         .bg-pattern {
             position: fixed;
             top: 0; left: 0; width: 200%; height: 200%;
             z-index: -1;
             opacity: 0.08;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='10' y='30' fill='%2364748b' font-size='20'%3E€%3C/text%3E%3Ctext x='60' y='30' fill='%2364748b' font-size='15'%3Eлв%3C/text%3E%3Ctext x='35' y='70' fill='%2364748b' font-size='25'%3E⇋%3C/text%3E%3C/svg%3E");
-            animation: float 60s linear infinite;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='10' y='30' fill='%2364748b' font-size='16'%3E€%3C/text%3E%3Ctext x='60' y='30' fill='%2364748b' font-size='16'%3Eлв%3C/text%3E%3Ctext x='35' y='75' fill='%2364748b' font-size='20'%3E⇋%3C/text%3E%3C/svg%3E");
+            animation: float 40s linear infinite;
         }
 
         @keyframes float {
@@ -48,179 +49,176 @@
             100% { transform: translate(0, 0) rotate(0deg) scale(1); }
         }
 
-        .glass {
+        .glass-panel {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .segmented-control {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 12px;
-            padding: 4px;
-        }
-
-        .segmented-button.active {
-            background: #f59e0b;
-            color: #020617;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        input {
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
         }
 
         input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+            border-color: #f59e0b;
         }
 
-        .result-animate {
+        .segmented-btn.active {
+            background-color: #f59e0b;
+            color: #020617;
+            font-weight: bold;
+        }
+
+        #result-area {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        #result-area.visible {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 1.5rem;
         }
     </style>
 </head>
-<body class="flex items-center justify-center p-4">
+<body>
 
     <div class="bg-pattern"></div>
 
-    <main class="w-full max-w-md">
-        <div class="flex flex-col items-center mb-8">
-            <div class="w-20 h-20 mb-4 glass rounded-[2rem] flex items-center justify-center shadow-2xl overflow-hidden relative border-amber-500/30">
-                <div class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-transparent"></div>
-                <svg viewBox="0 0 100 100" class="w-16 h-16">
-                    <defs>
-                        <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M20,50 A30,30 0 0,1 80,50" fill="none" stroke="url(#iconGrad)" stroke-width="2"/>
-                    <text x="50" y="58" text-anchor="middle" font-family="Comfortaa" font-weight="bold" font-size="28" fill="url(#iconGrad)">DP</text>
-                    <path d="M40,75 L60,75 M50,70 L50,80" stroke="white" stroke-opacity="0.5" stroke-width="2"/>
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold text-center tracking-tight">DualPay <span class="text-amber-500">Calculator</span></h1>
-        </div>
-
-        <div class="glass rounded-3xl p-6 space-y-6">
+    <main class="w-full max-w-md px-4 py-8">
+        <div class="glass-panel rounded-[2.5rem] p-6 relative overflow-hidden">
             
-            <div class="space-y-2">
-                <label class="text-sm font-semibold text-slate-400 ml-1">Сума за плащане</label>
-                <div class="flex space-x-2">
-                    <input type="number" id="billAmount" step="0.01" placeholder="0.00" 
-                        class="flex-1 p-4 bg-slate-50 text-slate-900 rounded-2xl text-xl font-bold">
-                    <select id="billCurrency" class="p-4 bg-slate-800 rounded-2xl border-none font-bold text-amber-500">
-                        <option value="BGN">BGN</option>
-                        <option value="EUR">EUR</option>
-                    </select>
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-700 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
+                    <span class="font-artistic font-bold text-white text-xl">DP</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-artistic font-bold text-white leading-tight">DualPay</h1>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest">Calculator</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-6">
                 <div class="space-y-2">
-                    <label class="text-xs font-semibold text-slate-400 ml-1 uppercase">Платено в лв</label>
-                    <input type="number" id="paidBGN" step="0.01" placeholder="0.00" 
-                        class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-lg">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs font-semibold text-slate-400 ml-1 uppercase">Платено в €</label>
-                    <input type="number" id="paidEUR" step="0.01" placeholder="0.00" 
-                        class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 text-lg">
-                </div>
-            </div>
-
-            <div id="errorBox" class="hidden bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-2xl text-sm text-center">
-                Недостатъчна платена сума!
-            </div>
-
-            <div id="resultSection" class="opacity-0 translate-y-4 pointer-events-none result-animate space-y-4 pt-4 border-t border-slate-700">
-                <div class="flex justify-between items-center">
-                    <span class="text-lg font-artistic">Ресто в:</span>
-                    <div class="segmented-control flex">
-                        <button onclick="updateResultDisplay('BGN')" id="btnBGN" class="segmented-button active px-6 py-2 rounded-xl text-sm font-bold transition-all">BGN</button>
-                        <button onclick="updateResultDisplay('EUR')" id="btnEUR" class="segmented-button px-6 py-2 rounded-xl text-sm font-bold transition-all">EUR</button>
+                    <label class="text-xs font-semibold text-slate-400 ml-1 uppercase">Сума за плащане</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="billAmount" step="0.01" placeholder="0.00" class="flex-1 h-14 bg-[#f8fafc] text-slate-900 rounded-2xl px-4 text-xl font-bold outline-none">
+                        <select id="billCurrency" class="w-24 h-14 bg-slate-800 text-amber-500 rounded-2xl px-2 font-bold appearance-none text-center cursor-pointer border border-slate-700">
+                            <option value="BGN">BGN</option>
+                            <option value="EUR">EUR</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="bg-amber-500/10 border border-amber-500/20 p-6 rounded-3xl text-center">
-                    <div id="mainChange" class="text-4xl font-bold text-amber-500 mb-1">0.00 лв</div>
-                    <div id="secondaryChange" class="text-sm text-slate-400">≈ 0.00 €</div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Платено в лв</label>
+                        <input type="number" id="paidBGN" step="0.01" placeholder="0.00" class="w-full h-12 bg-slate-800/50 border border-slate-700 rounded-xl px-3 text-white font-semibold outline-none focus:bg-slate-800">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-400 ml-1 uppercase">Платено в €</label>
+                        <input type="number" id="paidEUR" step="0.01" placeholder="0.00" class="w-full h-12 bg-slate-800/50 border border-slate-700 rounded-xl px-3 text-white font-semibold outline-none focus:bg-slate-800">
+                    </div>
+                </div>
+
+                <div id="error-msg" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl text-center font-semibold">
+                    Недостатъчна сума за покриване на сметката!
+                </div>
+
+                <div id="result-area">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Ресто в:</span>
+                            <div class="flex bg-slate-800 rounded-xl p-1 gap-1">
+                                <button onclick="setChangeCurrency('BGN')" id="btn-BGN" class="segmented-btn active px-4 py-1.5 rounded-lg text-xs transition-all">BGN</button>
+                                <button onclick="setChangeCurrency('EUR')" id="btn-EUR" class="segmented-btn px-4 py-1.5 rounded-lg text-xs transition-all text-slate-400">EUR</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-amber-500/20 to-transparent border border-amber-500/30 rounded-3xl p-6 text-center relative overflow-hidden">
+                            <div id="mainChange" class="text-4xl font-bold text-amber-500 mb-1">0.00</div>
+                            <div id="secondaryChange" class="text-xs text-slate-400 font-medium">0.00</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <footer class="mt-8 text-center space-y-2 pb-8">
-            <p class="text-xs text-slate-500 font-mono">Курс: 1 EUR = 1.95583 BGN</p>
-            <p class="text-sm text-slate-400 font-artistic">Диана Николова &copy; DualPay Calculator</p>
-        </footer>
+            <footer class="mt-8 pt-6 border-t border-slate-700/50 text-center">
+                <p class="text-[10px] font-mono text-slate-500 mb-1">Курс: 1 EUR = 1.95583 BGN</p>
+                <p class="text-[10px] font-artistic text-slate-400">Теодора Бахчеванска © DualPay Calculator</p>
+            </footer>
+        </div>
     </main>
 
     <script>
-        const rate = 1.95583;
-        const inputs = ['billAmount', 'billCurrency', 'paidBGN', 'paidEUR'];
-        let currentResultCurrency = 'BGN';
-        let totalChangeBGN = 0;
+        const RATE = 1.95583;
+        let selectedChangeCurrency = 'BGN';
 
-        // Следене на промени в реално време
-        inputs.forEach(id => {
-            document.getElementById(id).addEventListener('input', calculate);
+        const billInput = document.getElementById('billAmount');
+        const billCurr = document.getElementById('billCurrency');
+        const paidBGN = document.getElementById('paidBGN');
+        const paidEUR = document.getElementById('paidEUR');
+        const errorMsg = document.getElementById('error-msg');
+        const resultArea = document.getElementById('result-area');
+        
+        const inputs = [billInput, billCurr, paidBGN, paidEUR];
+
+        inputs.forEach(input => {
+            input.addEventListener('input', calculate);
         });
 
+        function setChangeCurrency(curr) {
+            selectedChangeCurrency = curr;
+            document.querySelectorAll('.segmented-btn').forEach(b => b.classList.remove('active', 'text-slate-400'));
+            document.getElementById(`btn-${curr}`).classList.add('active');
+            if(curr === 'BGN') document.getElementById('btn-EUR').classList.add('text-slate-400');
+            else document.getElementById('btn-BGN').classList.add('text-slate-400');
+            calculate();
+        }
+
         function calculate() {
-            const bill = parseFloat(document.getElementById('billAmount').value) || 0;
-            const billCurr = document.getElementById('billCurrency').value;
-            const paidBGN = parseFloat(document.getElementById('paidBGN').value) || 0;
-            const paidEUR = parseFloat(document.getElementById('paidEUR').value) || 0;
+            const bill = parseFloat(billInput.value) || 0;
+            const pBGN = parseFloat(paidBGN.value) || 0;
+            const pEUR = parseFloat(paidEUR.value) || 0;
 
-            // Превръщане на всичко в BGN за изчисление
-            const billInBGN = billCurr === 'EUR' ? bill * rate : bill;
-            const totalPaidInBGN = paidBGN + (paidEUR * rate);
-            
-            totalChangeBGN = totalPaidInBGN - billInBGN;
+            // Превръщане на сметката в лева за база
+            const billInBGN = billCurr.value === 'EUR' ? bill * RATE : bill;
+            const totalPaidInBGN = pBGN + (pEUR * RATE);
+            const changeInBGN = totalPaidInBGN - billInBGN;
 
-            const resSection = document.getElementById('resultSection');
-            const errorBox = document.getElementById('errorBox');
-
-            if (totalPaidInBGN > 0 && billInBGN > 0) {
-                if (totalChangeBGN < -0.01) {
-                    errorBox.classList.remove('hidden');
-                    resSection.classList.add('opacity-0', 'translate-y-4');
+            if (bill > 0 && totalPaidInBGN > 0) {
+                if (changeInBGN < -0.001) {
+                    errorMsg.classList.remove('hidden');
+                    resultArea.classList.remove('visible');
                 } else {
-                    errorBox.classList.add('hidden');
-                    resSection.classList.remove('opacity-0', 'translate-y-4');
-                    resSection.classList.add('pointer-events-auto');
-                    updateResultDisplay(currentResultCurrency);
+                    errorMsg.classList.add('hidden');
+                    resultArea.classList.add('visible');
+                    displayChange(changeInBGN);
                 }
             } else {
-                resSection.classList.add('opacity-0', 'translate-y-4');
-                errorBox.classList.add('hidden');
+                resultArea.classList.remove('visible');
+                errorMsg.classList.add('hidden');
             }
         }
 
-        function updateResultDisplay(currency) {
-            currentResultCurrency = currency;
-            
-            // UI актуализация на бутоните
-            document.getElementById('btnBGN').classList.toggle('active', currency === 'BGN');
-            document.getElementById('btnEUR').classList.toggle('active', currency === 'EUR');
-
+        function displayChange(bgnAmount) {
             const mainEl = document.getElementById('mainChange');
             const secEl = document.getElementById('secondaryChange');
 
-            if (currency === 'BGN') {
-                const inEUR = totalChangeBGN / rate;
-                mainEl.innerText = `${totalChangeBGN.toFixed(2)} лв`;
-                secEl.innerText = `≈ ${inEUR.toFixed(2)} €`;
+            if (selectedChangeCurrency === 'BGN') {
+                const eurEquivalent = bgnAmount / RATE;
+                mainEl.innerHTML = `${bgnAmount.toFixed(2)} <span class="text-lg">лв</span>`;
+                secEl.innerText = `Еквивалент: ${eurEquivalent.toFixed(2)} €`;
             } else {
-                const inEUR = totalChangeBGN / rate;
-                mainEl.innerText = `${inEUR.toFixed(2)} €`;
-                secEl.innerText = `≈ ${totalChangeBGN.toFixed(2)} лв`;
+                const eurAmount = bgnAmount / RATE;
+                mainEl.innerHTML = `${eurAmount.toFixed(2)} <span class="text-lg">€</span>`;
+                secEl.innerText = `Еквивалент: ${bgnAmount.toFixed(2)} лв`;
             }
-        }
-
-        // Регистриране на Service Worker за PWA функционалност
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(() => {});
-            });
         }
     </script>
 </body>
